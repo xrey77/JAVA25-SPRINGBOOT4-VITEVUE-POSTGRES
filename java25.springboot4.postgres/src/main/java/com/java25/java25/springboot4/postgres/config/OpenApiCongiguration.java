@@ -16,7 +16,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @Configuration
 public class OpenApiCongiguration {
 
-	  @Value("${server.port:9000}")
+	  @Value("${server.port:8000}")
 	  private String prodUrl;
 
 	  @Bean
@@ -30,7 +30,7 @@ public class OpenApiCongiguration {
 	    Contact contact = new Contact();
 	    contact.setEmail("rey107@gmail.com");
 	    contact.setName("Reynald Marquez-Gragasin");
-	    contact.setUrl("http://localhost:9000");
+	    contact.setUrl("http://localhost:8000");
 
 	    License mitLicense = new License().name("MIT License").url("https://choosealicense.com/licenses/mit/");
 
