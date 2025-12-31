@@ -20,7 +20,6 @@ import com.java25.java25.springboot4.postgres.services.JwtUserDetailsService;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.DispatcherType;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,20 +43,29 @@ public class SecurityConfig {
 	}	
  	  		    
 	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomJwtAuthenticationEntryPoint authEntryPoint) throws Exception {	
         http
             .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()            		
+                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()  
+                 .requestMatchers(
+                 	    "/v3/api-docs/**",
+                 	    "/api-docs/**",
+                 	    "/swagger-ui/**",
+                         "/v3/api-docs/swagger-config",                  	    
+                 	    "/swagger-ui.html",
+                 	    "/swagger-resources/**",
+                 	    "/webjars/**"
+                 	).permitAll()                                                         
                 .requestMatchers("/auth/**", "/public/**", "/take/**", "/error").permitAll()                
                 .requestMatchers("/listproducts", "/listcatalogs", "/searchproduct").permitAll()                                               
                 .requestMatchers("/", "/index.html", "/about", "/contact", "/profile", "/static/**", "/vue/**", "/images/**", "/users/**", "/products/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()                
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2
                     .jwt(jwt -> jwt.decoder(jwtDecoder()))
+                    .authenticationEntryPoint(authEntryPoint)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
